@@ -1,0 +1,7 @@
+.*.swp
+.*.swo
+*.o
+*.oxx
+tags
+*.a
+bin/

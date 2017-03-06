@@ -1,0 +1,51 @@
+#include <cstd/std.h>
+#include <io/io.h>
+#include <debug/hexdump.h>
+
+int main(int argc, char *argv[])
+{
+	prog_name = "filtertype";
+
+	const char *this = argv[0];
+
+	if (argc != 2) {
+		log_error("Syntax: %s <type>", this);
+		exit(1);
+	}
+
+	const char *type = argv[1];
+
+	struct file_source fi;
+	struct file_sink fo;
+
+	struct io_intf io;
+
+	if (!file_source_init(&fi, NULL)) {
+		log_error("Failed to open source");
+		exit(13);
+	}
+
+	if (!file_sink_init(&fo, NULL, false)) {
+		log_error("Failed to open sink");
+		exit(13);
+	}
+
+	if (!io_intf_init(&io, NULL, &fi, &fo, io_relay, io_relay, type, type)) {
+		log_error("Failed to initialise IO adapter");
+		exit(13);
+	}
+
+	struct relay_packet *packet;
+	while ((packet = io_intf_recv(&io))) {
+		if (strcmp(packet->type, type) == 0) {
+			io_intf_forward(&io, packet);
+		}
+		free(packet);
+	}
+
+	io_intf_destroy(&io);
+	file_source_destroy(&fi);
+	file_sink_destroy(&fo);
+
+	return 0;
+}
