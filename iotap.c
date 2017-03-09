@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	struct relay_packet *packet;
 	char type[RELAY_TYPE_LENGTH];
 	size_t count = 0;
-	while ((packet = io_intf_recv(&io))) {
+	while (io_intf_recv(&io, &packet) && packet) {
 		if (strcmp(packet->type, type) == 0) {
 			count++;
 		} else {

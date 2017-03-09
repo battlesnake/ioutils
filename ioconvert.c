@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	size_t converted_bytes = 0;
 
 	struct relay_packet *packet;
-	while ((packet = io_intf_recv(&io))) {
+	while (io_intf_recv(&io, &packet) && packet) {
 		total_chunks++;
 		total_bytes += packet->length;
 		if (relay_type == NULL || strcmp(packet->type, relay_type) == 0) {

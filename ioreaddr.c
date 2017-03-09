@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	}
 
 	struct relay_packet *packet;
-	while ((packet = io_intf_recv(&io))) {
+	while (io_intf_recv(&io, &packet) && packet) {
 		snprintf(packet->local, sizeof(packet->local), "%s", addr);
 		io_intf_forward(&io, packet);
 		free(packet);
